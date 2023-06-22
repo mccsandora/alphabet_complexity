@@ -6,12 +6,12 @@ import re
 
 
 def get_script(note):
-    txt = open("data/scrlist.txt", "r")
-    search = txt.read()
+    scripts = pd.read_csv('data\scriptlist.csv')
+    search = np.asarray(scripts['Script'])
     scr = 'None'
-    try:
-        scr = re.search(search, note)[0]
-    except:
-        pass
-        
+    for i in range(len(search)):
+        try:
+            scr = re.search(r'(?:^|(?<= ))' + str((search[i])) + '(?:(?= )|$)', note)[0]
+        except:
+            pass
     return scr
