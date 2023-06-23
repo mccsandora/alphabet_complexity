@@ -54,7 +54,7 @@ def get_language(note):
     return note.split()[0]
 
     
-def make_picture(code,ttf):
+def make_picture(code,ttf,font_size=200,size=500):
     """
     Creates picture of character
     Inputs:
@@ -63,11 +63,56 @@ def make_picture(code,ttf):
     Outputs:
         picture: 2d numpy array
     """
-    image = Image.new('RGB', (100,100))
+    image = Image.new('RGB', (size,size))
 
     draw = ImageDraw.Draw(image) 
-    draw.text((50,50), 
+    draw.text((int(size/2),int(size/2)), 
               u(code), 
-              font=ImageFont.truetype(ttf, 11))
+              font=ImageFont.truetype(ttf, font_size))
     picture = np.mean(255-np.array(image),axis=-1)/255
+    picture = remove_ones(picture)
+    picture = padd(picture)
+    return picture
+
+def remove_ones(arr):
+    """
+    Removes rows and columns of a 2D numpy array that only contain ones, unless there is a different value in the adjacent row or column.
+    Inputs:
+        arr: 2D numpy array
+    Outputs:
+        new_arr: 2D numpy array with specified rows and columns removed
+    """
+    rows_to_keep = []
+    cols_to_keep = []
+    
+    for i in range(arr.shape[0]):
+        if np.all(arr[i,:] == 1):
+            if i > 0 and not np.all(arr[i-1,:] == 1):
+                rows_to_keep.append(i)
+            elif i < arr.shape[0]-1 and not np.all(arr[i+1,:] == 1):
+                rows_to_keep.append(i)
+        else:
+            rows_to_keep.append(i)
+            
+    for j in range(arr.shape[1]):
+        if np.all(arr[:,j] == 1):
+            if j > 0 and not np.all(arr[:,j-1] == 1):
+                cols_to_keep.append(j)
+            elif j < arr.shape[1]-1 and not np.all(arr[:,j+1] == 1):
+                cols_to_keep.append(j)
+        else:
+            cols_to_keep.append(j)
+            
+    new_arr = arr[np.ix_(rows_to_keep, cols_to_keep)]
+    
+    return new_arr
+
+
+def padd(picture,k=10):
+    w,h = picture.shape
+    h += 2*k
+    picture = np.hstack([np.ones((w,k)),
+               picture,np.ones((w,k))])
+    picture = np.vstack([np.ones((k,h)),
+               picture,np.ones((k,h))])
     return picture
