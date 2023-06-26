@@ -25,8 +25,12 @@ def scriptcomp():
     annalist = annascr['EnglishName']
     for i in range(len(annalist)):
         annalist[i] = annalist[i].upper() 
-        
+
     matchscr = [get_script(i) for i in annalist]
+    a_only = np.asarray(annalist)[np.where(np.asarray(matchscr) == 'None')[0]]
+
     print('Length of Anna\'s Scripts : ' + str(len(annalist)))
     print('Matching Script Count : ' + str(len(np.unique(matchscr))-1))
     print('Length of Extra Scripts in Anna\'s : ' + str(len(np.where(np.asarray(matchscr) == 'None')[0])))
+    
+    return np.concatenate((np.asarray(scripts, dtype = object), a_only))
