@@ -15,7 +15,7 @@ def get_script(note):
             pass
     return scr
 
-
+#returned array does not include variants of scripts mentioned in Anna's, just the base script name
 def scriptcomp():
     scriptsdf = pd.read_csv('data/scriptlist.csv')
     scripts = list(scriptsdf.Script)
