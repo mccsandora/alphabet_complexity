@@ -14,6 +14,6 @@ def check_symmetry(picture):
             if picture[j][i] == picture[j][-i]:
                    symm += 1
             else: symm += 0
-    try: symm /= (len(picture)*(len(picture[0])/2))
+    try: symm /= (len(picture)*(np.floor(len(picture[0])/2)))
     except: symm = 0
     return symm
