@@ -24,10 +24,10 @@ def scriptcomp(variants = True):
     alist = ascripts['EnglishName']
     alist = [k.upper() for k in alist]
     if variants == False:
-        matchscr = [get_script(i) for i in annalist]
-        a_only = np.asarray(annalist)[np.where(np.asarray(matchscr) == 'None')[0]]
+        matchscr = [get_script(i) for i in alist]
+        a_only = np.asarray(alist)[np.where(np.asarray(matchscr) == 'None')[0]]
 
-        print('Length of Anna\'s Scripts : ' + str(len(annalist)))
+        print('Length of Anna\'s Scripts : ' + str(len(alist)))
         print('Matching Script Count : ' + str(len(np.unique(matchscr))-1))
         print('Length of Extra Scripts in Anna\'s : ' + str(len(np.where(np.asarray(matchscr) == 'None')[0])))
         
