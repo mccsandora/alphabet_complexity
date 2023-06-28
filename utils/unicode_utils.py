@@ -48,8 +48,7 @@ def u(i):
     
 def get_language(note):
     """
-    Extracts language from unicode note.
-    Assumes first word of note is the language.
+    Deprecated
     """
     return note.split()[0]
 
@@ -66,13 +65,24 @@ def make_picture(code,ttf,font_size=200,size=500):
     image = Image.new('RGB', (size,size))
 
     draw = ImageDraw.Draw(image) 
-    draw.text((int(size/2),int(size/2)), 
+    draw.text((int(size/2),int(size/4)), 
               u(code), 
               font=ImageFont.truetype(ttf, font_size))
     picture = np.mean(255-np.array(image),axis=-1)/255
+    return picture
+
+def make_picture_twotry(code,ttf):
+    picture = make_picture(code,ttf,font_size=200,size=500)
+    if np.min([np.min(picture[0]),np.min(picture[-1]),
+               np.min(picture[:,0]),np.min(picture[:,-1])])<1:
+        picture = make_picture(code,ttf,font_size=200,size=1000)
+    if np.min([np.min(picture[0]),np.min(picture[-1]),
+               np.min(picture[:,0]),np.min(picture[:,-1])])<1:
+        print('character didn\'t fit:',u(code),end=' ')
     picture = remove_ones(picture)
     picture = padd(picture)
     return picture
+    
 
 def remove_ones(arr):
     """
@@ -109,6 +119,10 @@ def remove_ones(arr):
 
 
 def padd(picture,k=10):
+    """
+    Pads picture with ones.
+    k: number of padding rows.
+    """
     w,h = picture.shape
     h += 2*k
     picture = np.hstack([np.ones((w,k)),
@@ -116,3 +130,10 @@ def padd(picture,k=10):
     picture = np.vstack([np.ones((k,h)),
                picture,np.ones((k,h))])
     return picture
+
+def is_box(P):
+    P = np.round(P)
+    P = remove_ones(P)[1:-1,1:-1]
+    P = 1-P
+    P = remove_ones(P)[1:-1,1:-1]
+    return np.sum(P)==0
