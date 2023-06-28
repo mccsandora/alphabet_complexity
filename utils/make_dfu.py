@@ -8,7 +8,7 @@ tqdm.pandas()
 def make_dfu():
     df_unicode = create_df_unicode()
 
-    dfu=df_unicode[df_unicode.code.apply(code_type)=='Writing Symbol']
+    dfu=df_unicode[df_unicode.code.apply(code_type)=='Writing Symbol'].reset_index(drop=True)
 
     dfu['script'] = dfu.apply(script_type,axis=1)
     print('Deleting',(dfu.script=='None').sum(),
