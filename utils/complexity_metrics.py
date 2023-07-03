@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.ndimage import distance_transform_edt
 
 
 def pixel_count_complexity(picture):
@@ -7,31 +8,23 @@ def pixel_count_complexity(picture):
     """
     return np.mean(picture)
 
+def apply_distance_transform(image):
+    """
+    computes the distance transform of the image
+    """
+    distance_transform = distance_transform_edt(image)
+
+    return distance_transform
+
 
 def check_symmetry(picture):
-    left_right_sym = 0
-    top_bottom_sym = 0
+    """
+    Computes the symmetry of the image     
+    """
 
-    # check left-right symmetry
-    for j in range(len(picture)):
-        for i in range(int(np.floor(len(picture[0]) / 2))):
-            if picture[j][i] == picture[j][-i]:
-                left_right_sym += 1
-
-    # check top-bottom symmetry
-    for j in range(int(np.floor(len(picture) / 2))):
-        for i in range(len(picture[0])):
-            if picture[j][i] == picture[-j][i]:
-                top_bottom_sym += 1
-
-    # get symmetry ratios
-    left_right_total = len(picture) * np.floor(len(picture[0]) / 2)
-    top_bottom_total = np.floor(len(picture) / 2) * len(picture[0])
-
-    sym_lr_ratio = left_right_sym / left_right_total if left_right_total > 0 else 0
-    sym_tb_ratio = top_bottom_sym / top_bottom_total if top_bottom_total > 0 else 0
-
-    return sym_lr_ratio, sym_tb_ratio
+    lr_symm = 1 - np.mean(np.abs(picture - picture[:, ::-1]))
+    tb_symm = 1 - np.mean(np.abs(picture - picture[::-1, :]))
+    return lr_symm, tb_symm
 
 
 
@@ -42,3 +35,4 @@ def check_symmetry2(picture, type = "lr"):
     else:
         symm = picture.T[:,::-1]
         return 1 - np.mean(np.abs(picture - symm))
+
