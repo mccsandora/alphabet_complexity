@@ -32,3 +32,13 @@ def check_symmetry(picture):
     sym_tb_ratio = top_bottom_sym / top_bottom_total if top_bottom_total > 0 else 0
 
     return sym_lr_ratio, sym_tb_ratio
+
+
+
+def check_symmetry2(picture, type = "lr"):
+    if type == "lr":
+        symm = picture[:,::-1]
+        return 1 - np.mean(np.abs(picture - symm))
+    else:
+        symm = picture.T[:,::-1]
+        return 1 - np.mean(np.abs(picture - symm))
