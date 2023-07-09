@@ -1,4 +1,5 @@
 import numpy as np
+
 from scipy.ndimage import distance_transform_edt
 
 
@@ -36,3 +37,7 @@ def check_symmetry2(picture, type = "lr"):
         symm = picture.T[:,::-1]
         return 1 - np.mean(np.abs(picture - symm))
 
+def calculate_complexity(normalized_values):
+
+    complexity_score = np.sum(normalized_values)
+    return complexity_score
